@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: paas-9259d4fb-5313-4c32-ac42-558f9c550794-caas
+  name: user-service-deployment
+  annotations:
+    kubernetes.io/change-cause: "Initialized by manifest files."
+  labels:
+    env: production
+    tier: backend
+    app: user-service
+spec:
+  replicas: 1 # 자원이 부족해서 1개만..
+  selector:
+    matchLabels:
+      env: production
+      tier: backend
+      app: user-service
+  template:
+    metadata:
+      labels:
+        env: production
+        tier: backend
+        app: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: egovframe/msa-user-service:k8s
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+            limits:
+              cpu: 800m
+              memory: 1024Mi
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 36
+          # livenessProbe:
+          #   httpGet:
+          #     path: /actuator/health
+          #     port: 80
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "k8s"
+            - name: EUREKA_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-configmap
+                  key: EUREKA_URI
+            - name: APIGATEWAY_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-configmap
+                  key: APIGATEWAY_URI
+            - name: SPRING_CLOUD_CONFIG_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-configmap
+                  key: SPRING_CLOUD_CONFIG_URI
+          ports:
+            - containerPort: 80
