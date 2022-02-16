@@ -1,7 +1,7 @@
 // https://github.com/jenkinsci/kubernetes-plugin
 podTemplate(
     name: "jenkins-slave",
-    #inheritFrom: "jenkins-slave-backend",
+    //inheritFrom: "jenkins-slave-backend",
     serviceAccount: "jenkins",
     containers: [
         containerTemplate(name: "docker", image: "docker", ttyEnabled: true, command: 'cat'),
