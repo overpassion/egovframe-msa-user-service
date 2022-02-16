@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: overpssion/egovframe-msa-backend-user-service:k8s
+          image: overpassion/egovframe-msa-backend-user-service:k8s
           imagePullPolicy: Always
           #resources:
           #  requests:
