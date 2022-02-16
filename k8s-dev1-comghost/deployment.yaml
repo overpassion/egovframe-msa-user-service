@@ -27,13 +27,13 @@ spec:
         - name: user-service
           image: egovframe/msa-user-service:k8s
           imagePullPolicy: Always
-          resources:
-            requests:
-              cpu: 500m
-              memory: 512Mi
-            limits:
-              cpu: 800m
-              memory: 1024Mi
+          #resources:
+          #  requests:
+          #    cpu: 500m
+          #    memory: 512Mi
+          #  limits:
+          #    cpu: 800m
+          #    memory: 1024Mi
           startupProbe:
             httpGet:
               path: /actuator/health
@@ -72,5 +72,20 @@ spec:
                 configMapKeyRef:
                   name: backend-configmap
                   key: SPRING_CLOUD_CONFIG_URI
+            - name: MYSQL_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-configmap
+                  key: MYSQL_HOSTNAME
+            - name: RABBITMQ_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-configmap
+                  key: RABBITMQ_HOSTNAME
+            - name: ZIPKIN_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: backend-configmap
+                  key: ZIPKIN_HOSTNAME
           ports:
             - containerPort: 80
